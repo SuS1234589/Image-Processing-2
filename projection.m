@@ -1,6 +1,7 @@
 load('Parameters_V1_1.mat');
 load('mocapPoints3D.mat'); 
 
+% assuming that the data is all in pixels 
 % 3D world --> 3D camera
 R = Parameters.Rmat;
 C = Parameters.position;
@@ -24,7 +25,12 @@ y_film = f * (Y ./ Z);
 % 2D Film --> 2D Pixel 
 ox = Parameters.prinpoint(1);
 oy = Parameters.prinpoint(2);
-x = x_film + ox;
-y = y_film + oy;
+x = x_film + ox; % u
+y = y_film + oy; % v
 
 
+
+img = imread('im1corrected.jpg');  
+imshow(img);                  
+hold on;                      
+plot(x, y, 'ro', 'MarkerSize', 8, 'LineWidth', 2);
