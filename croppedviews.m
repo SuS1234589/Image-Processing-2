@@ -30,8 +30,16 @@ disp(F_crop);
 
 load('mocapPoints3D.mat'); % Load Nx3 array pts3D
 
+
+
 % Make homogeneous coordinates (4 x N)
-pts3D_hom = [pts3D, ones(size(pts3D,1),1)]';
+pts3D_hom = [pts3D, ones(size(pts3D,1), 2)];
+disp(size(P1_crop));    % Should be 3 x 4
+disp(size(pts3D));
+disp(size(pts3D_hom));  % Should be 4 x N
+
+proj1 = P1_crop * pts3D_hom; % 3 x N
+
 
 % Projection
 proj1 = P1_crop * pts3D_hom; % 3 x N
@@ -41,6 +49,7 @@ v1_proj = proj1(2,:) ./ proj1(3,:);
 proj2 = P2_crop * pts3D_hom; % 3 x N
 u2_proj = proj2(1,:) ./ proj2(3,:);
 v2_proj = proj2(2,:) ./ proj2(3,:);
+
 
 
 figure; imshow(im1_crop); hold on; plot(u1_proj, v1_proj, 'r+');
