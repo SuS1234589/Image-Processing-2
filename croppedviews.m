@@ -33,13 +33,7 @@ load('mocapPoints3D.mat'); % Load Nx3 array pts3D
 
 
 % Make homogeneous coordinates (4 x N)
-pts3D_hom = [pts3D, ones(size(pts3D,1), 2)];
-disp(size(P1_crop));    % Should be 3 x 4
-disp(size(pts3D));
-disp(size(pts3D_hom));  % Should be 4 x N
-
-proj1 = P1_crop * pts3D_hom; % 3 x N
-
+pts3D_hom = [pts3D; ones(1, size(pts3D,2))]; % 4 x 39
 
 % Projection
 proj1 = P1_crop * pts3D_hom; % 3 x N
