@@ -25,49 +25,77 @@ t_rel = C2 - C1;
 tx = [0 -t_rel(3) t_rel(2); t_rel(3) 0 -t_rel(1); -t_rel(2) t_rel(1) 0];
 E = tx * R_rel;
 F_crop = inv(K2_new)' * E * inv(K1_new);
+
 [Uf,Sf,Vf]=svd(F_crop); Sf(3,3)=0; F_crop=Uf*Sf*Vf';
+disp('Cropped Fundamental matrix:');
 disp(F_crop);
 
-load('mocapPoints3D.mat'); % Load Nx3 array pts3D
+load('mocapPoints3D.mat'); % pts3D: 3 x N (N = 39)
+pts3D_hom = [pts3D; ones(1, size(pts3D,2))]; % 4 x N
 
+% 3D projection to full image
+proj1_full = K1 * [R1 T1] * pts3D_hom; % 3 x N
+proj2_full = K2 * [R2 T2] * pts3D_hom; % 3 x N
+u1_full = proj1_full(1,:) ./ proj1_full(3,:);
+v1_full = proj1_full(2,:) ./ proj1_full(3,:);
+u2_full = proj2_full(1,:) ./ proj2_full(3,:);
+v2_full = proj2_full(2,:) ./ proj2_full(3,:);
 
+% 3D projection to crop by subtracting crop origin
+u1_proj = u1_full - xc1;
+v1_proj = v1_full - yc1;
+u2_proj = u2_full - xc2;
+v2_proj = v2_full - yc2;
 
-% Make homogeneous coordinates (4 x N)
-pts3D_hom = [pts3D; ones(1, size(pts3D,2))]; % 4 x 39
+figure; imshow(im1_crop); hold on; plot(u1_proj, v1_proj, 'r+'); title('Cropped 1, Projected Points');
+figure; imshow(im2_crop); hold on; plot(u2_proj, v2_proj, 'g+'); title('Cropped 2, Projected Points');
 
-% Projection
-proj1 = P1_crop * pts3D_hom; % 3 x N
-u1_proj = proj1(1,:) ./ proj1(3,:);
-v1_proj = proj1(2,:) ./ proj1(3,:);
-
-proj2 = P2_crop * pts3D_hom; % 3 x N
-u2_proj = proj2(1,:) ./ proj2(3,:);
-v2_proj = proj2(2,:) ./ proj2(3,:);
-
-
-
-figure; imshow(im1_crop); hold on; plot(u1_proj, v1_proj, 'r+');
-figure; imshow(im2_crop); hold on; plot(u2_proj, v2_proj, 'g+');
-
-sel_idx = 1:10;
+sel_idx = 1:10; % Use some points for epipolar line demo
 pts_crop1 = [u1_proj(sel_idx)', v1_proj(sel_idx)'];
 pts_crop2 = [u2_proj(sel_idx)', v2_proj(sel_idx)'];
+
+% Clip points to be inside crop for plotting:
+w1 = size(im1_crop,2); h1 = size(im1_crop,1);
+w2 = size(im2_crop,2); h2 = size(im2_crop,1);
+pts_crop1(:,1) = max(1, min(w1, pts_crop1(:,1)));
+pts_crop1(:,2) = max(1, min(h1, pts_crop1(:,2)));
+pts_crop2(:,1) = max(1, min(w2, pts_crop2(:,1)));
+pts_crop2(:,2) = max(1, min(h2, pts_crop2(:,2)));
+
 plot_epipolar_lines_cropped(im1_crop, im2_crop, pts_crop1, pts_crop2, F_crop);
 
 function plot_epipolar_lines_cropped(im1, im2, pts1, pts2, F)
-    figure;
     subplot(1,2,1); imshow(im1); hold on;
+    sz = size(im1);
     for i = 1:size(pts1,1)
         l = F' * [pts2(i,:) 1]';
-        x = 1:size(im1,2); y = (-l(1)*x - l(3))/l(2);
-        plot(x, y, 'r'); plot(pts1(i,1), pts1(i,2),'go');
+        if abs(l(2)) > 1e-8
+            x = 1:sz(2);
+            y = (-l(1)*x - l(3))/l(2);
+            valid = (y >= 1) & (y <= sz(1));
+            plot(x(valid), y(valid), 'r-');
+        else
+            x = repmat(-l(3)/l(1), 1, 2); y = [1 sz(1)];
+            plot(x, y, 'r-');
+        end
+        plot(pts1(i,1), pts1(i,2),'go');
     end
     title('Epipolar lines in Cropped Image 1');
+
     subplot(1,2,2); imshow(im2); hold on;
+    sz = size(im2);
     for i = 1:size(pts2,1)
         l = F * [pts1(i,:) 1]';
-        x = 1:size(im2,2); y = (-l(1)*x - l(3))/l(2);
-        plot(x, y, 'b'); plot(pts2(i,1), pts2(i,2),'go');
+        if abs(l(2)) > 1e-8
+            x = 1:sz(2);
+            y = (-l(1)*x - l(3))/l(2);
+            valid = (y >= 1) & (y <= sz(1));
+            plot(x(valid), y(valid), 'b-');
+        else
+            x = repmat(-l(3)/l(1), 1, 2); y = [1 sz(1)];
+            plot(x, y, 'b-');
+        end
+        plot(pts2(i,1), pts2(i,2),'go');
     end
     title('Epipolar lines in Cropped Image 2');
 end
