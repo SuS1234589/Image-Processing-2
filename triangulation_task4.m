@@ -8,6 +8,27 @@ clear; clc; close all;
 load('Parameters_V1_1.mat'); % Should contain Camera1 struct
 load('Parameters_V2_1.mat'); % Should contain Camera2 struct
 
+K1 = Parameters_V1_1.Kmat;
+R1 = Parameters_V1_1.Rmat;
+
+% Camera location/translation
+C1 = Parameters_V1_1.position(:); % Camera center in world coords
+T1 = -R1 * C1; % Translation vector
+
+% Build projection matrix for Camera 1
+P1 = K1 * [R1, T1];
+
+K2 = Parameters_V2_1.Kmat;
+R1 = Parameters_V2_1.Rmat;
+
+% Camera location/translation
+C2 = Parameters_V2_1.position(:); % Camera center in world coords
+T2 = -R2 * C2; % Translation vector
+
+% Build projection matrix for Camera 1
+P2 = K2 * [R2, T2];
+
+
 % Load corrected images
 im1 = imread('im1corrected.jpg');
 im2 = imread('im2corrected.jpg');
@@ -53,11 +74,7 @@ function X = triangulate_point(P1, P2, x1, x2)
     X = X_homog(1:3) / X_homog(4);
 end
 
-% Construct Projection Matrices
-P1 = Camera1.Kmat * [Camera1.Rmat, Camera1.Tvec];
-P2 = Camera2.Kmat * [Camera2.Rmat, Camera2.Tvec];
-
-%% Triangulate All Points
+% Triangulate All Points
 N_points = size(points_img1, 1);
 points_3d = zeros(N_points, 3);
 
