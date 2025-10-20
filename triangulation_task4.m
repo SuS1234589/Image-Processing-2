@@ -6,23 +6,24 @@ clear; clc; close all;
 
 % Load camera parameters (adjust filenames as needed)
 load('Parameters_V1_1.mat'); % Should contain Camera1 struct
-load('Parameters_V2_1.mat'); % Should contain Camera2 struct
 
-K1 = Parameters_V1_1.Kmat;
-R1 = Parameters_V1_1.Rmat;
+K1 = Parameters.Kmat;
+R1 = Parameters.Rmat;
 
 % Camera location/translation
-C1 = Parameters_V1_1.position(:); % Camera center in world coords
+C1 = Parameters.position(:); % Camera center in world coords
 T1 = -R1 * C1; % Translation vector
 
 % Build projection matrix for Camera 1
 P1 = K1 * [R1, T1];
 
-K2 = Parameters_V2_1.Kmat;
-R1 = Parameters_V2_1.Rmat;
+load('Parameters_V2_1.mat'); % Should contain Camera2 struct
+
+K2 = Parameters.Kmat;
+R2 = Parameters.Rmat;
 
 % Camera location/translation
-C2 = Parameters_V2_1.position(:); % Camera center in world coords
+C2 = Parameters.position(:); % Camera center in world coords
 T2 = -R2 * C2; % Translation vector
 
 % Build projection matrix for Camera 1
