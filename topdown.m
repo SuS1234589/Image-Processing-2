@@ -84,5 +84,5 @@ text(W/2, 30, '+Y', 'Color', 'g', 'FontSize', 12);
 
 imwrite(out, 'top_down_fused.png');
 
-% Optional: Save mm-to-pixel mapping for downstream use
+% Save mm-to-pixel mapping for downstream use
 save('top_down_fused_info.mat','Xmin','Xmax','Ymin','Ymax','W','H');
