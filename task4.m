@@ -190,5 +190,5 @@ results.door_height = door_height;
 results.person_height = person_height;
 results.camera_position = camera_pos;
 
-save('task34_results.mat', 'results');
-fprintf('Results saved to task34_results.mat\n');
+save('task4_results.mat', 'results');
+fprintf('Results saved to task4_results.mat\n');

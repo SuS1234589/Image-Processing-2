@@ -1,0 +1,56 @@
+%get set of 39 points from task2 for BOTH images
+%for a F matrix, compute epipolar line in image2 for each point in image1 and vice versa
+%compute the squared distance from each point to its corresponding epipolar line
+%then compute the mean over all these squared distances
+%using two F matrices: from task5 and 8-point algorithm (task6)
+%verify that the error from task5 is lower than task6
+
+load('mocapPoints3D.mat'); 
+%points from image 1
+load('Parameters_V1_1.mat');
+[x1, y1] = projectPoints(pts3D, Parameters);
+
+%points from image 2
+load('Parameters_V2_1.mat');
+[x2, y2] = projectPoints(pts3D, Parameters);
+
+%load F matrices
+load('task5_results.mat'); %F_corrected
+load('task6_results.mat'); %F_eight
+corr_F = F_corrected;
+eight_F = F_eight;
+
+%compute total squared distance for corr_F
+sum_dist_corr1 = 0;
+sum_dist_corr2 = 0;
+sum_dist_eight1 = 0;
+sum_dist_eight2 = 0;
+for i = 1:length(x1)
+    %get the points
+    p1 = [x1(i); y1(i); 1];
+    p2 = [x2(i); y2(i); 1];
+
+    %corresponding epipolar line in opposite image for corrected F
+    corr_l2 = corr_F * p1; 
+    corr_l1 = corr_F' * p2; 
+
+    %corresponding epipolar line in opposite image for eight-point F
+    eight_l2 = eight_F * p1;
+    eight_l1 = eight_F' * p2; 
+
+    %distance from point to line for corrected F
+    d2 = abs(corr_l2' * p2) / sqrt(corr_l2(1)^2 + corr_l2(2)^2);
+    d1 = abs(corr_l1' * p1) / sqrt(corr_l1(1)^2 + corr_l1(2)^2);
+    sum_dist_corr1 = sum_dist_corr1 + d1^2;
+    sum_dist_corr2 = sum_dist_corr2 + d2^2;
+
+    %distance from point to line for eight-point F
+    d2_eight = abs(eight_l2' * p2) / sqrt(eight_l2(1)^2 + eight_l2(2)^2);
+    d1_eight = abs(eight_l1' * p1) / sqrt(eight_l1(1)^2 + eight_l1(2)^2);
+    sum_dist_eight1 = sum_dist_eight1 + d1_eight^2;
+    sum_dist_eight2 = sum_dist_eight2 + d2_eight^2;
+end
+
+
+    
+

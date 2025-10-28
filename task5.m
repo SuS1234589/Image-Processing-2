@@ -43,4 +43,4 @@ disp('Fundamental matrix F (rank 2 enforced):');
 disp(F_corrected);
 
 % Save matrices for further use
-save('task35_results.mat', 'F', 'F_corrected', 'K1', 'K2', 'R1', 'R2', 't_rel');
+save('task5_results.mat', 'F', 'F_corrected', 'K1', 'K2', 'R1', 'R2', 't_rel');

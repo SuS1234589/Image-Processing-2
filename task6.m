@@ -1,4 +1,4 @@
-load('task34_results.mat'); % loads 'results' struct
+load('task4_results.mat'); % loads 'results' struct
 
 pts1 = results.points_img1; % Correspondences in Image 1
 pts2 = results.points_img2; % Correspondences in Image 2
@@ -35,6 +35,9 @@ Fhat = Uf * Sf * Vf';
 
 % Denormalize
 F_eight = T2' * Fhat * T1;
+
+% Save the results for task 7
+save('task6_results.mat', 'F_eight');
 
 disp('Eight-point Fundamental matrix:');
 disp(F_eight);
