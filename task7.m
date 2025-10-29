@@ -39,17 +39,20 @@ for i = 1:length(x1)
     eight_l1 = eight_F' * p2; 
 
     %distance from point to line for corrected F
-    d2 = abs(corr_l2' * p2) / sqrt(corr_l2(1)^2 + corr_l2(2)^2);
-    d1 = abs(corr_l1' * p1) / sqrt(corr_l1(1)^2 + corr_l1(2)^2);
-    sum_dist_corr1 = sum_dist_corr1 + d1^2;
-    sum_dist_corr2 = sum_dist_corr2 + d2^2;
+    d2 = ((corr_l2(1)*p2(1))+(corr_l2(2)*p2(2))+corr_l2(3))^2 / (corr_l2(1)^2 + corr_l2(2)^2);
+    d1 = ((corr_l1(1)*p1(1))+(corr_l1(2)*p1(2))+corr_l1(3))^2 / (corr_l1(1)^2 + corr_l1(2)^2);
+    sum_dist_corr1 = sum_dist_corr1 + d1;
+    sum_dist_corr2 = sum_dist_corr2 + d2;
 
     %distance from point to line for eight-point F
-    d2_eight = abs(eight_l2' * p2) / sqrt(eight_l2(1)^2 + eight_l2(2)^2);
-    d1_eight = abs(eight_l1' * p1) / sqrt(eight_l1(1)^2 + eight_l1(2)^2);
-    sum_dist_eight1 = sum_dist_eight1 + d1_eight^2;
-    sum_dist_eight2 = sum_dist_eight2 + d2_eight^2;
+    d2_eight = ((eight_l2(1)*p2(1)) + (eight_l2(2)*p2(2)) + eight_l2(3))^2 / (eight_l2(1)^2 + eight_l2(2)^2);
+    d1_eight = ((eight_l1(1)*p1(1)) + (eight_l1(2)*p1(2)) + eight_l1(3))^2 / (eight_l1(1)^2 + eight_l1(2)^2);
+    sum_dist_eight1 = sum_dist_eight1 + d1_eight;
+    sum_dist_eight2 = sum_dist_eight2 + d2_eight;
 end
+
+mean_dist_corr = (sum_dist_corr1 + sum_dist_corr2) / (2 * length(x1))
+mean_dist_eight = (sum_dist_eight1 + sum_dist_eight2) / (2 * length(x1))
 
 
     
