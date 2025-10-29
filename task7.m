@@ -17,8 +17,9 @@ load('Parameters_V2_1.mat');
 %load F matrices
 load('task5_results.mat'); %F_corrected
 load('task6_results.mat'); %F_eight
-corr_F = F_corrected;
-eight_F = F_eight;
+%normalize F matrices for comparison
+corr_F = F_corrected / F_corrected(3,3)
+eight_F = F_eight / F_eight(3,3)
 
 %compute total squared distance for corr_F
 sum_dist_corr1 = 0;
