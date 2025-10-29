@@ -50,8 +50,13 @@ fprintf('7-8:   DOORWAY - top edge and bottom edge\n');
 fprintf('9-10:  PERSON - top of head and feet position\n');
 fprintf('11:    CAMERA on tripod location\n\n');
 
+% Hardcoded
+load('task4_results.mat')
+points_img1 = results.points_img1;
+points_img2 = results.points_img2;
+
 % Use cpselect for point selection
-[points_img1, points_img2] = cpselect(im1, im2, 'Wait', true);
+% [points_img1, points_img2] = cpselect(im1, im2, 'Wait', true);
 
 % Verify we have at least 11 points
 if size(points_img1,1) < 11
